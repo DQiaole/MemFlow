@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="MemFlow: Optical Flow Estimation and Prediction with Memory.">
+  <meta name="keywords" content="Optical Flow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MemFlow: Optical Flow Estimation and Prediction with Memory</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+<!--  <link rel="icon" href="./static/images/favicon.svg">-->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://github.com/DQiaole">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">MemFlow: Optical Flow Estimation and Prediction with Memory</h1>
+          <h2><font color="gray" size="5">CVPR 2024</font></h2>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://dqiaole.github.io/">Qiaole Dong</a>,</span>
+            <span class="author-block">
+              <a href="http://yanweifu.github.io/">Yanwei Fu</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Fudan University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="https://arxiv.org/abs/2303.08384"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="ai ai-arxiv"></i>-->
+<!--                  </span>-->
+<!--                  <span>arXiv</span>-->
+<!--                </a>-->
+<!--              </span>-->
+              <!-- Video Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="fab fa-youtube"></i>-->
+<!--                  </span>-->
+<!--                  <span>Video</span>-->
+<!--                </a>-->
+<!--              </span>-->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/DQiaole/MemFlow"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="https://github.com/google/nerfies/releases/tag/0.1"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="far fa-images"></i>-->
+<!--                  </span>-->
+<!--                  <span>Data</span>-->
+<!--                  </a>-->
+<!--              </span>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <center>
+      <img src="./imgs/teaser.png" width="600px"/>
+      </center>
+<!--      <video id="teaser" autoplay muted loop height="100%">-->
+<!--        <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/teaser.mp4"-->
+<!--                type="video/mp4">-->
+<!--      </video>-->
+      <h2 class="subtitle has-text-centered">
+        EPE on Sintel (clean) vs. inference time (ms) and model size (M). MemFlow(-T) (x it) indicates running our
+        network with only x iterations of GRU.
+      </h2>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+         <center>
+        <h2 class="title is-3">Comparison with Previous SOTA</h2>
+        <h2 class="subtitle has-text-left">
+        Please zoom in for better visualization.
+      </h2>
+        <div class="columns is-vcentered interpolation-panel">
+          <img src="./imgs/fig4.png"
+               class="interpolation-image"
+               alt="Interpolate start reference image."/>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <img src="./imgs/fig5.png"
+               class="interpolation-image"
+               alt="Interpolate start reference image."/>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <img src="./imgs/fig6.png"
+               class="interpolation-image"
+               alt="Interpolate start reference image."/>
+        </div>
+           </center>
+      </div>
+    </div>
+  </div>
+</section>>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3">Super Efficient/Effective though wiht Same Architecture</h2>
+      <h2 class="subtitle has-text-left">
+        Our method outperforms 15-iteration SKFlow’s performance, after using only 2 iterations.
+      </h2>
+      <center>
+      <img src="./imgs/fig3.png" width="500px"/>
+      </center>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+         <center>
+        <h2 class="title is-3">Beyond Optical Flow Estimation: Future Prediction</h2>
+        <h2 class="subtitle has-text-left">
+          Repurposing MemFlow for optical flow future prediction. Following videos show the qualitative results of
+          future prediction (one time step ahead). From left to right are: Predicted optical
+          flow into next frame superimposed on the video frame, Synthesized next video frame based on our predicted
+          flow, and Groundtruth next frame.
+      </h2>
+        <div class="columns is-vcentered interpolation-panel">
+          <video autoplay="autoplay" loop="loop" id="video0" muted="">
+   <source src="./imgs/ofp_0.mp4" type="video/mp4">
+</video>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <video autoplay="autoplay" loop="loop" id="video1" muted="">
+   <source src="./imgs/ofp_1.mp4" type="video/mp4">
+</video>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <video autoplay="autoplay" loop="loop" id="video2" muted="">
+   <source src="./imgs/ofp_2.mp4" type="video/mp4">
+</video>
+        </div>
+           <div class="columns is-vcentered interpolation-panel">
+          <video autoplay="autoplay" loop="loop" id="video3" muted="">
+   <source src="./imgs/ofp_3.mp4" type="video/mp4">
+</video>
+        </div>
+           </center>
+      </div>
+    </div>
+  </div>
+</section>>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Optical flow is a classical task that is important to the vision community. Classical optical flow estimation uses two
+            frames as input, whilst some recent methods consider multiple frames to explicitly model long-range information.
+            The former ones limit their ability to fully leverage temporal coherence along the video sequence; and the latter
+            ones incur heavy computational overhead, typically not possible for real-time flow estimation. Some multi-frame-based
+            approaches even necessitate unseen future frames for current estimation, compromising real-time applicability in
+            safety-critical scenarios. To this end, we present MemFlow, a real-time method for optical flow estimation and prediction
+            with memory. Our method enables memory read-out and update modules for aggregating historical motion information in real-time.
+            Furthermore, we integrate resolution-adaptive re-scaling to accommodate diverse video resolutions. Besides, our approach
+            seamlessly extends to the future prediction of optical flow based on past observations. Leveraging effective historical
+            motion aggregation, our method outperforms VideoFlow with fewer parameters and faster inference speed on Sintel and
+            KITTI-15 datasets in terms of generalization performance. At the time of submission, MemFlow also leads in performance
+            on the 1080p Spring dataset.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+<!--    <div class="columns is-centered has-text-centered">-->
+<!--      <div class="column is-four-fifths">-->
+<!--        <h2 class="title is-3">Video</h2>-->
+<!--        <div class="publication-video">-->
+<!--          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"-->
+<!--                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <center>
+      <h2 class="title is-3">Superior Generalization Performance</h2>
+      <h2 class="subtitle has-text-left">
+      Generalization performance of optical flow estimation on Sintel and KITTI-15 after trained on FlyingChairs and FlyingThings3D.
+      </h2>
+      <img src="./imgs/table1.png" width="500px"/>
+      </center>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <center>
+      <h2 class="title is-3">Comparable with SOTA on Standard Benchmark</h2>
+      <h2 class="subtitle has-text-left">
+      Optical flow finetuning evaluation on the public benchmark.
+      </h2>
+      <img src="./imgs/table2.png" width="500px"/>
+      </center>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <center>
+      <h2 class="title is-3">Test on HD Video Benchmark (Spring)</h2>
+        <h2 class="subtitle has-text-left">
+      Optical flow generalization and finetuning results on 1080p Spring dataset.
+      </h2>
+      <img src="./imgs/table3.png" width="1200px"/>
+      </center>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <center>
+      <h2 class="title is-3">Framewrok</h2>
+      <img src="./imgs/overview.png" width="800px"/>
+      </center>
+<!--      <video id="teaser" autoplay muted loop height="100%">-->
+<!--        <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/teaser.mp4"-->
+<!--                type="video/mp4">-->
+<!--      </video>-->
+      <h2 class="subtitle has-text-left">
+        MemFlow maintains a memory buffer to store historical motion states of video, together with an efficient
+        update and read-out process that retrieves useful motion information for the current frame’s optical flow estimation.
+      </h2>
+
+    </div>
+  </div>
+</section>
+
+<!--<section class="section">-->
+<!--  <div class="container is-max-desktop">-->
+<!--    <div class="columns is-centered">-->
+<!--      &lt;!&ndash; Visual Effects. &ndash;&gt;-->
+<!--      <div class="column">-->
+<!--        <div class="content">-->
+<!--          <h2 class="title is-3">Multi-View Deformation Network</h2>-->
+<!--          &lt;!&ndash;          <p>&ndash;&gt;-->
+<!--          &lt;!&ndash;            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect&ndash;&gt;-->
+<!--          &lt;!&ndash;            would be impossible without nerfies since it would require going through a wall.&ndash;&gt;-->
+<!--          &lt;!&ndash;          </p>&ndash;&gt;-->
+<!--          <img src="./static/images/pool_sample.png" width="600"/>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      &lt;!&ndash;/ Visual Effects. &ndash;&gt;-->
+
+<!--      &lt;!&ndash; Matting. &ndash;&gt;-->
+<!--      <div class="column">-->
+<!--        <h2 class="title is-3">Camera Pose Estimation Network</h2>-->
+<!--        <div class="columns is-centered">-->
+<!--          <div class="column content">-->
+<!--            <img src="./static/images/camnet.png">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>
+    @inproceedings{dong2024memflow,
+      title={MemFlow: Optical Flow Estimation and Prediction with Memory},
+      author={Dong, Qiaole and Fu, Yanwei},
+      booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+      year={2024}
+    }
+    </code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+<!--      <a class="icon-link"-->
+<!--         href="https://arxiv.org/abs/2303.08384">-->
+<!--        <i class="fas fa-file-pdf"></i>-->
+<!--      </a>-->
+      <a class="icon-link" href="https://github.com/DQiaole/MemFlow" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
