@@ -77,7 +77,7 @@ bash evaluate.sh
 ```
 
 ## Training
-We used the following training schedule in our paper (2 A100/A6000 GPUs). Training logs will be written to the `runs` which can be 
+We used the following training schedule in our paper (2 A100/A6000 GPUs). Training logs will be written to the `logs` which can be 
 visualized using tensorboard.
 ```Shell
 bash train.sh
