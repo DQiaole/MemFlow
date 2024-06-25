@@ -27,10 +27,10 @@ We provide pretrained [models](https://github.com/DQiaole/MemFlow/releases/tag/v
     ├── MemFlowNet_spring.pth
     ├── MemFlowNet_T_things.pth
     ├── MemFlowNet_T_things_kitti.pth
-    ├── MemFlowNet_T_sintel
-    ├── MemFlowNet_T_kitti
-    ├── MemFlowNet_P_things
-    ├── MemFlowNet_P_sintel
+    ├── MemFlowNet_T_sintel.pth
+    ├── MemFlowNet_T_kitti.pth
+    ├── MemFlowNet_P_things.pth
+    ├── MemFlowNet_P_sintel.pth
 ```
 
 ## Demos
@@ -38,6 +38,7 @@ Download models and put them in the `ckpts` folder. Run the following command:
 ```shell
 python -u inference.py --name MemFlowNet --stage sintel --restore_ckpt ckpts/MemFlowNet_sintel.pth --seq_dir demo_input_images --vis_dir demo_flow_vis
 ```
+Note: you can change the `_CN.val_decoder_depth` of `configs/sintel_memflownet.py` from `15` to smaller numbers for better speed and performance trade-off.
 
 ## Required Data
 To evaluate/train MatchFlow, you will need to download the required datasets.
