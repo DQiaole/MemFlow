@@ -38,7 +38,7 @@ Download models and put them in the `ckpts` folder. Run the following command:
 ```shell
 python -u inference.py --name MemFlowNet --stage sintel --restore_ckpt ckpts/MemFlowNet_sintel.pth --seq_dir demo_input_images --vis_dir demo_flow_vis
 ```
-Note: you can change the `_CN.val_decoder_depth` of `configs/sintel_memflownet.py` from `15` to smaller numbers for better speed and performance trade-off.
+Note: you can change the `_CN.val_decoder_depth` of `configs/sintel_memflownet.py` from `15` to smaller numbers for better speed and performance trade-off as in Fig. 1.
 
 ## Required Data
 To evaluate/train MatchFlow, you will need to download the required datasets.
