@@ -1,5 +1,5 @@
 # MemFlow
-### [Website](https://dqiaole.github.io/MemFlow/) | [Paper](https://arxiv.org/abs/2404.04808)
+### [Website](https://dqiaole.github.io/MemFlow/) | [Paper](https://openaccess.thecvf.com/content/CVPR2024/papers/Dong_MemFlow_Optical_Flow_Estimation_and_Prediction_with_Memory_CVPR_2024_paper.pdf) | [Supplementary](https://openaccess.thecvf.com/content/CVPR2024/supplemental/Dong_MemFlow_Optical_Flow_CVPR_2024_supplemental.pdf)
 > [**MemFlow: Optical Flow Estimation and Prediction with Memory**](https://arxiv.org/abs/2404.04808)            
 > Qiaole Dong, Yanwei Fu        
 > **CVPR 2024**
