@@ -86,7 +86,7 @@ def inference(cfg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--name', default='MemFlowNet', help="name your experiment")
+    parser.add_argument('--name', default='MemFlowNet', choices=['MemFlowNet', 'MemFlowNet_T'], help="name your experiment")
     parser.add_argument('--stage', help="determines which dataset to use for training")
     parser.add_argument('--restore_ckpt', help="restore checkpoint")
 
@@ -94,15 +94,28 @@ if __name__ == '__main__':
     parser.add_argument('--vis_dir', default='default')
 
     args = parser.parse_args()
-
-    if args.stage == 'things':
-        from configs.things_memflownet import get_cfg
-    elif args.stage == 'sintel':
-        from configs.sintel_memflownet import get_cfg
-    elif args.stage == 'spring_only':
-        from configs.spring_memflownet import get_cfg
-    elif args.stage == 'kitti':
-        from configs.kitti_memflownet import get_cfg
+    if args.name == "MemFlowNet":
+        if args.stage == 'things':
+            from configs.things_memflownet import get_cfg
+        elif args.stage == 'sintel':
+            from configs.sintel_memflownet import get_cfg
+        elif args.stage == 'spring_only':
+            from configs.spring_memflownet import get_cfg
+        elif args.stage == 'kitti':
+            from configs.kitti_memflownet import get_cfg
+        else:
+            raise NotImplementedError
+    elif args.name == "MemFlowNet_T":
+        if args.stage == 'things':
+            from configs.things_memflownet_t import get_cfg
+        elif args.stage == 'things_kitti':
+            from configs.things_memflownet_t_kitti import get_cfg
+        elif args.stage == 'sintel':
+            from configs.sintel_memflownet_t import get_cfg
+        elif args.stage == 'kitti':
+            from configs.kitti_memflownet_t import get_cfg
+        else:
+            raise NotImplementedError
 
     cfg = get_cfg()
     cfg.update(vars(args))
