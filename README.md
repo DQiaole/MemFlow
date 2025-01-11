@@ -15,7 +15,7 @@ conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cud
 pip install yacs loguru einops timm==0.4.12 imageio matplotlib tensorboard scipy opencv-python h5py tqdm
 ```
 
-For training the model, you should further install the [FlashAttention](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features).
+For faster training or inference, you should further install the [FlashAttention](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features).
 
 ## Models
 We provide pretrained [models](https://github.com/DQiaole/MemFlow/releases/tag/v1.0.0). The default path of the models for evaluation is:

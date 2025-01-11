@@ -1,6 +1,13 @@
 import torch
 from inference.kv_memory_store import KeyValueMemoryStore
 from core.Networks.MemFlowNet.memory_util import *
+try:
+    from flash_attn import flash_attn_qkvpacked_func, flash_attn_func
+    FLASH_AVAIABLE = True
+    print("flash attention is available!")
+except:
+    FLASH_AVAIABLE = False
+    print('please consider installing flash attention for faster inference')
 
 
 class MemoryManager:
@@ -20,7 +27,7 @@ class MemoryManager:
         # dimensions will be inferred from input later
         self.CK = self.CV = None
         self.H = self.W = None
-
+        assert self.enable_long_term == False
         self.work_mem = KeyValueMemoryStore(count_usage=self.enable_long_term)
         self.reset_config = True
 
@@ -48,18 +55,19 @@ class MemoryManager:
                 memory_key = self.work_mem.key
 
             scale = scale * math.log(memory_key.shape[-1], self.cfg.train_avg_length)
-            similarity = torch.einsum('b c l, b c t -> b t l', query_key, memory_key) * scale
+            if FLASH_AVAIABLE == False:
+                similarity = torch.einsum('b c l, b c t -> b t l', query_key, memory_key) * scale
 
-            affinity, usage = do_softmax(similarity, inplace=True, top_k=self.top_k, return_usage=True)
+                affinity, _ = do_softmax(similarity, inplace=True, top_k=self.top_k, return_usage=True)
 
             if current_key is not None and current_value is not None:
                 all_memory_value = torch.cat([self.work_mem.value, current_value], -1)
-                work_usage = usage[:, :-h * w]
+                # work_usage = usage[:, :-h * w]
             else:
                 all_memory_value = self.work_mem.value
-                work_usage = usage
+                # work_usage = usage
             # Record memory usage for working memory
-            self.work_mem.update_usage(work_usage.flatten())
+            # self.work_mem.update_usage(work_usage.flatten())
             # else:
             #     raise NotImplementedError
         else:
@@ -67,14 +75,22 @@ class MemoryManager:
             if current_key is not None and current_value is not None:
                 memory_key = current_key
                 scale = scale * math.log(memory_key.shape[-1], self.cfg.train_avg_length)
-                similarity = torch.einsum('b c l, b c t -> b t l', query_key, memory_key) * scale
-                affinity = do_softmax(similarity, inplace=True, top_k=None, return_usage=False)
+                if FLASH_AVAIABLE == False:
+                    similarity = torch.einsum('b c l, b c t -> b t l', query_key, memory_key) * scale
+                    affinity = do_softmax(similarity, inplace=True, top_k=None, return_usage=False)
                 all_memory_value = current_value
             else:
                 return 0
 
-        # Shared affinity within each group
-        all_readout_mem = self._readout(affinity, all_memory_value)
+        if FLASH_AVAIABLE == False:
+            all_readout_mem = self._readout(affinity, all_memory_value)
+        else:
+            query_key = query_key.permute(0, 2, 1).unsqueeze(2).bfloat16()
+            memory_key = memory_key.permute(0, 2, 1).unsqueeze(2).bfloat16()
+            all_memory_value = all_memory_value.permute(0, 2, 1).unsqueeze(2).bfloat16()
+            all_readout_mem = flash_attn_func(query_key, memory_key, all_memory_value, dropout_p=0.0,
+                                              softmax_scale=scale, causal=False)
+            all_readout_mem = all_readout_mem.squeeze(2).permute(0, 2, 1).to(current_key)
 
         return all_readout_mem.view(all_readout_mem.shape[0], -1, h, w)
 
