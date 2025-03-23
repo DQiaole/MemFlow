@@ -17,6 +17,8 @@ pip install yacs loguru einops timm==0.4.12 imageio matplotlib tensorboard scipy
 
 For faster training or inference, you should further install the [FlashAttention](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features).
 
+This [FlashAttention wheel](https://github.com/Dao-AILab/flash-attention/releases/download/v2.3.2/flash_attn-2.3.2+cu116torch1.13cxx11abiFALSE-cp38-cp38-linux_x86_64.whl) is compatible with our CUDA version. Refer to [issue](https://github.com/DQiaole/MemFlow/issues/14#issue-2938768407). 
+
 ## Models
 We provide pretrained [models](https://github.com/DQiaole/MemFlow/releases/tag/v1.0.0). The default path of the models for evaluation is:
 ```Shell
