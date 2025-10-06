@@ -43,7 +43,7 @@ python -u inference.py --name MemFlowNet --stage sintel --restore_ckpt ckpts/Mem
 Note: you can change the `_CN.val_decoder_depth` of `configs/sintel_memflownet.py` from `15` to smaller numbers for better speed and performance trade-off as in Fig. 1.
 
 ## Required Data
-To evaluate/train MatchFlow, you will need to download the required datasets.
+To evaluate/train MemFlow, you will need to download the required datasets.
 * [FlyingThings3D](https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html)
 * [Sintel](http://sintel.is.tue.mpg.de/)
 * [KITTI](http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=flow)
